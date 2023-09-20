@@ -18,7 +18,7 @@ public class Point : MonoBehaviour
         }   
     }
 
-    //перемеение по клеточам если Runtime отключен
+    //перемещение по клеточам если Runtime отключен
     private void Update()
     {
         if (Runtime == false)
@@ -29,5 +29,17 @@ public class Point : MonoBehaviour
                 transform.position = Vector3Int.RoundToInt(transform.position);
             }
         }
+    }
+
+    //смена цвета на чёрный при навидении курсора на точку
+    private void OnMouseEnter()
+    {
+        GetComponent<Renderer>().material.color = Color.black;
+    }
+
+    //смена цвета на белый при навидении курсора на точку
+    private void OnMouseExit()
+    {
+        GetComponent<Renderer>().material.color = Color.white;
     }
 }

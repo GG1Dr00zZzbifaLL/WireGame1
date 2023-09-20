@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 4318839564433948894}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0085233, y: 0.18280265, z: 0.51665246}
+  m_LocalScale: {x: 1.2927543, y: 0.23432171, z: 0.66226}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,6 +99,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 40
   actualCost: 0
-  maxLenght: 5
+  maxLenght: 2
   StartPosition: {x: 0, y: 0}
   wireSpriteRender: {fileID: 4318839564433948895}

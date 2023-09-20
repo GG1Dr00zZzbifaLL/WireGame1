@@ -99,6 +99,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 20
   actualCost: 0
-  maxLenght: 10
+  maxLenght: 4
   StartPosition: {x: 0, y: 0}
   wireSpriteRender: {fileID: 4318839564433948895}

@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     public Text BudgetText;
     public Gradient myGradient;
 
-    //изначально выбран средний провод
+    //изначально выбран малый провод
     private void Start()
     {
         LowButton.onClick.Invoke();
@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
     }
     
     //обновление текущего бюджета 
-    public void UpdateBudgetUI (float CurrentBudget, float LevelBudget)
+    public void UpdateBudgetUI (float CurrentBudget, float LevelBudget)            //
     {
         BudgetText.text = Mathf.FloorToInt(CurrentBudget).ToString() + "m";
         BudgetSlider.value = CurrentBudget / LevelBudget;

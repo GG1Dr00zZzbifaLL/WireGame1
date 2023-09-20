@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public float LevelBudget = 1000f;
+    public float LowBudget = 10f;
     public float CurrentBudget = 0f;
     public UIManager myUIManager;
     public static Dictionary<Vector2, Point> AllPoints = new Dictionary<Vector2, Point>();
@@ -13,21 +13,22 @@ public class GameManager : MonoBehaviour
     {
         AllPoints.Clear();
         Time.timeScale = 0;
-        CurrentBudget = LevelBudget;
-        myUIManager.UpdateBudgetUI(CurrentBudget, LevelBudget);
+
+        CurrentBudget = LowBudget;                                     //
+        myUIManager.UpdateBudgetUI(CurrentBudget, LowBudget);         //
     }
 
-    //проверка что стоимость проложения провода стоит больше чем у нас есть в запасе
+    //проверка что стоимость проложения провода стоит больше чем у нас есть в запасе   //
     public bool CanPlaceItem(float itemCost)
     {
         if (itemCost > CurrentBudget) return false;
         else return true;
     }
 
-    //отнимание из бюджета сумму на которую мы проложили провод 
+    //отнимание из бюджета сумму на которую мы проложили провод //
     public void UpdateBudget(float itemCost)
     {
         CurrentBudget -= itemCost;
-        myUIManager.UpdateBudgetUI(CurrentBudget, LevelBudget);
+        myUIManager.UpdateBudgetUI(CurrentBudget, LowBudget);
     }
 }

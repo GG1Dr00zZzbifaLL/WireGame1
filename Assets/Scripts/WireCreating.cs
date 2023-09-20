@@ -27,19 +27,21 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         else
         {
             if (eventData.button == PointerEventData.InputButton.Left)
-            {
+            {             
                 if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true)
                 {
                     FinishWireCreation();
-                }             
+                }               
             }
-            else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                WireCreationStarted = false;
-                DeleteCurrentWire();
-            }
+            //else
+            //{
+            //    WireCreationStarted = false;
+            //}
         }
     }
+
+    //WireCreationStarted = false; !
+    //DeleteCurrentWire(); !
 
     //начало появление провода
     void StartWireCreation(Vector2 StartPosition)
@@ -77,8 +79,9 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         CurrentStartPoint.ConnectedWires.Add(CurrentWire);
         CurrentEndPoint.ConnectedWires.Add(CurrentWire);
 
-        myGameManager.UpdateBudget(CurrentWire.actualCost);
-
+        
+        myGameManager.UpdateBudget(CurrentWire.actualCost);                           //
+        
         StartWireCreation(CurrentEndPoint.transform.position);
     }
 
@@ -99,9 +102,9 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             Vector2 Direction = EndPosition - CurrentWire.StartPosition;
             Vector2 ClampedPosition = CurrentWire.StartPosition + Vector2.ClampMagnitude(Direction, CurrentWire.maxLenght);
 
-            CurrentEndPoint.transform.position = (Vector2)Vector2Int.FloorToInt(ClampedPosition);
+            CurrentEndPoint.transform.position = (Vector2)Vector2Int.FloorToInt(ClampedPosition); 
             CurrentEndPoint.PointID = CurrentEndPoint.transform.position;
-            CurrentWire.UpdateCreatingWire(CurrentEndPoint.transform.position);
+            CurrentWire.UpdateCreatingWire(CurrentEndPoint.transform.position);                                                     
         }
     }
 }

@@ -7,7 +7,7 @@ public class Wire : MonoBehaviour
     public float maxLenght = 1f;
     public Vector2 StartPosition;
     public SpriteRenderer wireSpriteRender;
-
+    
     //удлинение провода 
     public void UpdateCreatingWire(Vector2 ToPosition)
     {
@@ -20,6 +20,6 @@ public class Wire : MonoBehaviour
         float Length = direction.magnitude;
         wireSpriteRender.size = new Vector2(Length, wireSpriteRender.size.y);
 
-        actualCost = Length * Cost;
+        actualCost = Length * Cost;    //
     }
 }
