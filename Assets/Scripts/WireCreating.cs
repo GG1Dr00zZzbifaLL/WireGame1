@@ -33,15 +33,8 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                     FinishWireCreation();
                 }               
             }
-            //else
-            //{
-            //    WireCreationStarted = false;
-            //}
         }
     }
-
-    //WireCreationStarted = false; !
-    //DeleteCurrentWire(); !
 
     //начало появление провода
     void StartWireCreation(Vector2 StartPosition)
@@ -78,19 +71,10 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
 
         CurrentStartPoint.ConnectedWires.Add(CurrentWire);
         CurrentEndPoint.ConnectedWires.Add(CurrentWire);
-
         
-        myGameManager.UpdateBudget(CurrentWire.actualCost);                           //
+        myGameManager.UpdateBudget(CurrentWire.actualCost);                       
         
         StartWireCreation(CurrentEndPoint.transform.position);
-    }
-
-    //уничтожение проводов
-    void DeleteCurrentWire()
-    {
-        Destroy(CurrentWire.gameObject);
-        if (CurrentStartPoint.ConnectedWires.Count == 0 && CurrentStartPoint.Runtime == true) Destroy(CurrentStartPoint.gameObject);
-        if (CurrentEndPoint.ConnectedWires.Count == 0 && CurrentEndPoint.Runtime == true) Destroy(CurrentEndPoint.gameObject);
     }
 
     //обновление позиции
