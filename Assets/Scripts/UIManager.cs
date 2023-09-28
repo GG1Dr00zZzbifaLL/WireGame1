@@ -20,14 +20,7 @@ public class UIManager : MonoBehaviour
     public Gradient myGradient2;
     public Gradient myGradient3;
 
-    private int ChangeProvod = 0;
-
-
-    //изначально выбран малый провод
-    private void Start()
-    {
-        LowButton.onClick.Invoke();
-    }
+    private int ChangeProvod = -1;
 
     //перезапуск сцены при нажатии на кнопку 
     public void Restart()
@@ -38,31 +31,61 @@ public class UIManager : MonoBehaviour
     //смена проводов при нажатии на их иконки 
     public void ChangeWire(int myWireType)
     {
-        ChangeProvod = myWireType;
+        if (ChangeProvod == myWireType)
+        {
+            myWireType = -1;
+        }
+        else
+        {
+            ChangeProvod = myWireType;
+        }
 
-        if (myWireType == 0)
+        switch (myWireType)
         {
-            LowButton.GetComponent<Outline>().enabled = true;
-            MidButton.GetComponent<Outline>().enabled = false;
-            HighButton.GetComponent<Outline>().enabled = false;
-            wireCreating.WireToInstantiate = wireCreating.LowWire;
-            gameManager.AssignWire(myWireType);
-        }
-        if (myWireType == 1)
-        {
-            LowButton.GetComponent<Outline>().enabled = false;
-            MidButton.GetComponent<Outline>().enabled = true;
-            HighButton.GetComponent<Outline>().enabled = false;
-            wireCreating.WireToInstantiate = wireCreating.MidWire;
-            gameManager.AssignWire(myWireType);
-        }
-        if (myWireType == 2)
-        {
-            LowButton.GetComponent<Outline>().enabled = false;
-            MidButton.GetComponent<Outline>().enabled = false;
-            HighButton.GetComponent<Outline>().enabled = true;
-            wireCreating.WireToInstantiate = wireCreating.HighWire;
-            gameManager.AssignWire(myWireType);
+            case 0:
+                BudgetSlider.gameObject.SetActive(true);
+                BudgetSlider2.gameObject.SetActive(false);
+                BudgetSlider3.gameObject.SetActive(false);
+                LowButton.GetComponent<Outline>().enabled = true;
+                MidButton.GetComponent<Outline>().enabled = false;
+                HighButton.GetComponent<Outline>().enabled = false;
+                wireCreating.isCreate = true;
+                wireCreating.WireToInstantiate = wireCreating.LowWire;
+                gameManager.AssignWire(myWireType);
+                break;
+            case 1:
+                BudgetSlider.gameObject.SetActive(false);
+                BudgetSlider2.gameObject.SetActive(true);
+                BudgetSlider3.gameObject.SetActive(false);
+                LowButton.GetComponent<Outline>().enabled = false;
+                MidButton.GetComponent<Outline>().enabled = true;
+                HighButton.GetComponent<Outline>().enabled = false;
+                wireCreating.isCreate = true;
+                wireCreating.WireToInstantiate = wireCreating.MidWire;
+                gameManager.AssignWire(myWireType);
+                break;
+            case 2:
+                BudgetSlider.gameObject.SetActive(false);
+                BudgetSlider2.gameObject.SetActive(false);
+                BudgetSlider3.gameObject.SetActive(true);
+                LowButton.GetComponent<Outline>().enabled = false;
+                MidButton.GetComponent<Outline>().enabled = false;
+                HighButton.GetComponent<Outline>().enabled = true;
+                wireCreating.isCreate = true;
+                wireCreating.WireToInstantiate = wireCreating.HighWire;
+                gameManager.AssignWire(myWireType);
+                break;
+
+            default:
+                BudgetSlider.gameObject.SetActive(false);
+                BudgetSlider2.gameObject.SetActive(false);
+                BudgetSlider3.gameObject.SetActive(false);
+                LowButton.GetComponent<Outline>().enabled = false;
+                MidButton.GetComponent<Outline>().enabled = false;
+                HighButton.GetComponent<Outline>().enabled = false;
+                wireCreating.isCreate = false;
+                wireCreating.WireCreationStarted = false;
+                break;
         }
     }
 

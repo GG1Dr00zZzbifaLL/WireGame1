@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public float CurrentBudget = 0f;
     public static Dictionary<Vector2, Point> AllPoints = new Dictionary<Vector2, Point>();
     public UIManager myUIManager;
+    public WireCreating wireCreating;
 
     private float LowBudgetCurrent;  
     private float MidBudgetCurrent;  
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour
         myUIManager.WiresInitialize(LowBudget, MidBudget, HighBudget);
     }
 
-    //приравнивание текущей суммы к его проводу
+    //приравнивание текущей суммы к его проводу    
     public void AssignWire(int CurrentProvod)
     {
         this.CurrentProvod = CurrentProvod;
@@ -47,7 +48,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //проверка что стоимость проложения провода стоит больше чем у нас есть в запасе   
+    //проверка что стоимость проложения провода стоит меньше чем у нас есть в запасе   
     public bool CanPlaceItem(float itemCost)
     {
         if (itemCost > CurrentBudget) return false;
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour
     {
         CurrentBudget -= itemCost;
         myUIManager.UpdateBudgetUI(CurrentBudget, LowBudget);
-
+      
         if (CurrentProvod == 0)
         {
             LowBudgetCurrent -= itemCost;

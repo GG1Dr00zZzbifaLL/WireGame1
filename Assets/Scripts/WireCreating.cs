@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class WireCreating : MonoBehaviour, IPointerDownHandler
 {
-    bool WireCreationStarted = false;
+    public bool WireCreationStarted = false;
     public Wire CurrentWire;
     public GameManager myGameManager;
     public GameObject WireToInstantiate;
@@ -16,13 +16,18 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
     public Transform PointParent;
     public Transform wireParent;
 
+    public bool isCreate = false;
+
     //обработка нажатий кнопок 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (WireCreationStarted == false)
         {
-            WireCreationStarted = true;
-            StartWireCreation(Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(eventData.position)));
+            if (isCreate)
+            {
+                WireCreationStarted = true;
+                StartWireCreation(Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(eventData.position)));
+            }
         }
         else
         {
@@ -30,7 +35,9 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             {             
                 if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true)
                 {
-                    FinishWireCreation();
+                    FinishWireCreation();                    
+                    DeleteCurrentWire();
+                    WireCreationStarted = false;
                 }               
             }
         }
@@ -44,16 +51,23 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
 
         if (GameManager.AllPoints.ContainsKey(StartPosition))
         {
-            CurrentStartPoint = GameManager.AllPoints[StartPosition];
+            if (CurrentStartPoint != CurrentEndPoint)
+            {
+                CurrentStartPoint = GameManager.AllPoints[StartPosition];
+            }
+            else
+            {
+                CurrentStartPoint = null;
+            }
         }
-        else
+        else 
         {
             CurrentStartPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
             GameManager.AllPoints.Add(StartPosition, CurrentStartPoint);
         }
 
         CurrentStartPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
-        CurrentEndPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
+        CurrentEndPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();             
     }
 
     //непосредственное создание провода 
@@ -77,6 +91,14 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         StartWireCreation(CurrentEndPoint.transform.position);
     }
 
+    //уничтожение проводов
+    void DeleteCurrentWire()
+    {
+        Destroy(CurrentWire.gameObject);
+        if (CurrentStartPoint.ConnectedWires.Count == 0 && CurrentStartPoint.Runtime == true) Destroy(CurrentStartPoint.gameObject);
+        if (CurrentEndPoint.ConnectedWires.Count == 0 && CurrentEndPoint.Runtime == true) Destroy(CurrentEndPoint.gameObject);
+    }
+
     //обновление позиции
     private void Update()
     {
@@ -86,9 +108,9 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             Vector2 Direction = EndPosition - CurrentWire.StartPosition;
             Vector2 ClampedPosition = CurrentWire.StartPosition + Vector2.ClampMagnitude(Direction, CurrentWire.maxLenght);
 
-            CurrentEndPoint.transform.position = (Vector2)Vector2Int.FloorToInt(ClampedPosition); 
+            CurrentEndPoint.transform.position = (Vector2)Vector2Int.FloorToInt(ClampedPosition);
             CurrentEndPoint.PointID = CurrentEndPoint.transform.position;
-            CurrentWire.UpdateCreatingWire(CurrentEndPoint.transform.position);                                                     
+            CurrentWire.UpdateCreatingWire(CurrentEndPoint.transform.position);
         }
     }
 }

@@ -20,6 +20,6 @@ public class Wire : MonoBehaviour
         float Length = direction.magnitude;
         wireSpriteRender.size = new Vector2(Length, wireSpriteRender.size.y);
 
-        actualCost = Length * Cost;    
+        actualCost = Cost;    
     }
 }
