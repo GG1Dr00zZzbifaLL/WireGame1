@@ -28,21 +28,28 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("Level_1");
     }
 
-    //смена проводов при нажатии на их иконки 
+    //проверка на отключение провода в ui
     public void ChangeWire(int myWireType)
     {
-        if (ChangeProvod == myWireType)
+        if (ChangeProvod == myWireType && wireCreating.isCreate == true)
         {
             myWireType = -1;
         }
         else
         {
-            ChangeProvod = myWireType;
+            ChangeProvod = myWireType;    
         }
 
+        //смена проводов при нажатии на их иконки 
         switch (myWireType)
         {
             case 0:
+
+                if (wireCreating.WireCreationStarted == true)
+                {
+                    wireCreating.DeleteCurrentWire();
+                    wireCreating.WireCreationStarted = false;
+                }
                 BudgetSlider.gameObject.SetActive(true);
                 BudgetSlider2.gameObject.SetActive(false);
                 BudgetSlider3.gameObject.SetActive(false);
@@ -53,7 +60,14 @@ public class UIManager : MonoBehaviour
                 wireCreating.WireToInstantiate = wireCreating.LowWire;
                 gameManager.AssignWire(myWireType);
                 break;
+
             case 1:
+
+                if (wireCreating.WireCreationStarted == true)
+                {
+                    wireCreating.DeleteCurrentWire();
+                    wireCreating.WireCreationStarted = false;
+                }
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(true);
                 BudgetSlider3.gameObject.SetActive(false);
@@ -64,7 +78,14 @@ public class UIManager : MonoBehaviour
                 wireCreating.WireToInstantiate = wireCreating.MidWire;
                 gameManager.AssignWire(myWireType);
                 break;
+
             case 2:
+
+                if (wireCreating.WireCreationStarted == true)
+                {
+                    wireCreating.DeleteCurrentWire();
+                    wireCreating.WireCreationStarted = false;
+                }
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(false);
                 BudgetSlider3.gameObject.SetActive(true);
@@ -85,6 +106,7 @@ public class UIManager : MonoBehaviour
                 HighButton.GetComponent<Outline>().enabled = false;
                 wireCreating.isCreate = false;
                 wireCreating.WireCreationStarted = false;
+                wireCreating.DeleteCurrentWire();
                 break;
         }
     }

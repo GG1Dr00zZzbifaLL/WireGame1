@@ -7,14 +7,16 @@ public class GameManager : MonoBehaviour
     public float MidBudget = 6f;
     public float HighBudget = 3f;
     public float CurrentBudget = 0f;
-    public static Dictionary<Vector2, Point> AllPoints = new Dictionary<Vector2, Point>();
     public UIManager myUIManager;
     public WireCreating wireCreating;
+    public static Dictionary<Vector2, Point> AllPoints = new Dictionary<Vector2, Point>();
+    
 
     private float LowBudgetCurrent;  
     private float MidBudgetCurrent;  
     private float HighBudgetCurrent;
     private int CurrentProvod = 0;
+
 
     //очищение поля и приравнивание текущего бюджета выбраному проводу 
     private void Awake()
