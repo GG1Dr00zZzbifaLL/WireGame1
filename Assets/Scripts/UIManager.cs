@@ -113,16 +113,16 @@ public class UIManager : MonoBehaviour
 
     //инициализация каждого провода с его слайдером
     public void WiresInitialize(float StartBudget1, float StartBudget2, float StartBudget3)            
-    {
-        BudgetText.text = Mathf.FloorToInt(StartBudget1).ToString() + "штук";
+    {      
+        BudgetText.text = Mathf.FloorToInt(StartBudget1).ToString() + "штук";     
         BudgetSlider.value = StartBudget1;
         BudgetSlider.fillRect.GetComponent<Image>().color = myGradient.Evaluate(BudgetSlider.value);
 
-        BudgetText2.text = Mathf.FloorToInt(StartBudget2).ToString() + "штук";
+        BudgetText2.text = Mathf.FloorToInt(StartBudget2).ToString() + "штуки";
         BudgetSlider2.value = StartBudget2;
         BudgetSlider2.fillRect.GetComponent<Image>().color = myGradient2.Evaluate(BudgetSlider2.value);
 
-        BudgetText3.text = Mathf.FloorToInt(StartBudget3).ToString() + "штук";
+        BudgetText3.text = Mathf.FloorToInt(StartBudget3).ToString() + "штуки";
         BudgetSlider3.value = StartBudget3;
         BudgetSlider3.fillRect.GetComponent<Image>().color = myGradient3.Evaluate(BudgetSlider3.value);
     }
@@ -132,19 +132,57 @@ public class UIManager : MonoBehaviour
     {
         if (ChangeProvod == 0)
         {
-            BudgetText.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            if (CurrentBudget > 1)
+            {
+                BudgetText.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штуки";
+            }
+            else if (CurrentBudget == 1)
+            {
+                BudgetText.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штука";
+            }
+            else
+            {
+                BudgetText.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            }
+
             BudgetSlider.value = CurrentBudget / LevelBudget;
             BudgetSlider.fillRect.GetComponent<Image>().color = myGradient.Evaluate(BudgetSlider.value);
         }
+
         if (ChangeProvod == 1)
         {
-            BudgetText2.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            if (CurrentBudget > 1)
+            {
+                BudgetText2.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штуки";
+            }
+            else if (CurrentBudget == 1)
+            {
+                BudgetText2.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штука";
+            }
+            else
+            {
+                BudgetText2.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            }
+
             BudgetSlider2.value = CurrentBudget / LevelBudget;
             BudgetSlider2.fillRect.GetComponent<Image>().color = myGradient2.Evaluate(BudgetSlider2.value);
         }
+
         if (ChangeProvod == 2)
         {
-            BudgetText3.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            if (CurrentBudget > 1)
+            {
+                BudgetText3.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штуки";
+            }
+            else if (CurrentBudget == 1)
+            {
+                BudgetText3.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штука";
+            }
+            else
+            {
+                BudgetText3.text = Mathf.FloorToInt(CurrentBudget).ToString() + "штук";
+            }
+
             BudgetSlider3.value = CurrentBudget / LevelBudget;
             BudgetSlider3.fillRect.GetComponent<Image>().color = myGradient3.Evaluate(BudgetSlider3.value);
         }
