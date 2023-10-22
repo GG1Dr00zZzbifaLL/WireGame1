@@ -1,24 +1,54 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class WireCreating : MonoBehaviour, IPointerDownHandler
-{
-    public bool WireCreationStarted = false;
-    public bool isCreate = false;
-    public bool isNoProvod = false;
-    public Wire CurrentWire;
-    public GameManager myGameManager;
+{  
     public GameObject WireToInstantiate;
     public GameObject PointToInstantiate;
     public GameObject HighWire;
     public GameObject MidWire;
     public GameObject LowWire;
-    public Point CurrentStartPoint;
-    public Point CurrentEndPoint; 
+    public GameObject EndLogo;
+    public GameObject EndButton;
+    public GameObject EndRestart;
+    public GameObject ResButton;
+    public GameObject firstStar;
+    public GameObject secondStar;
+    public GameObject thirdStar;
+    private GameObject StartPoint;
+    private GameObject EndPoint;  
     public Transform PointParent;
     public Transform wireParent;
+    public List<Vector2> spisokPoint;
+    public List<Vector2> spisokPointEnd;
+    public Wire CurrentWire;
+    public GameManager myGameManager;
     public UIManager UImanager;
-    
+    public Point CurrentEndPoint; 
+    public Text Text;
+    public Slider Slider;
+    public Gradient Gradient;
+
+    public float tok = 320f;
+    public float tok1 = 320f;
+    public float MinusCharge;
+    public bool WireCreationStarted = false;
+    public bool isCreate = false;
+    public bool isNoProvod = false;
+    private bool isOk = false;
+
+    public void Start()
+    {
+        StartPoint = GameObject.FindGameObjectWithTag("StartPoint");
+        EndPoint = GameObject.FindGameObjectWithTag("EndPoint");
+        spisokPoint.Add(StartPoint.transform.position);
+        spisokPointEnd.Add(StartPoint.transform.position);
+        Text.text = Mathf.FloorToInt(tok).ToString() + "V";
+        Slider.value = tok;
+    }
+
     //обработка нажатий кнопок 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -27,11 +57,12 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             if (isCreate)
             {
                 WireCreationStarted = true;
-                StartWireCreation(Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(eventData.position)));
+                StartWireCreation(Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(eventData.position)), 0);
             }
         }
         else
         {
+            //создание провода при нажатии на левую кнопку мыши
             if (eventData.button == PointerEventData.InputButton.Left && !isNoProvod)
             {             
                 if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true)
@@ -45,32 +76,72 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
     }
 
     //начало появление провода
-    void StartWireCreation(Vector2 StartPosition)
+    void StartWireCreation(Vector2 StartPosition, int num)
     {
         CurrentWire = Instantiate(WireToInstantiate, wireParent).GetComponent<Wire>();
         CurrentWire.StartPosition = StartPosition;
 
-        if (myGameManager.CurrentBudget > 0)
+        //если num равен нулю то мы ставим конечную точку на другую точку 
+        if (num == 0)
+        {
+            //проверка на возможность ставить точки друг на друга 
+            foreach (Vector2 item in spisokPoint)
+            {
+                if (myGameManager.CurrentBudget > 0 && StartPosition == item)
+                {
+                    CurrentEndPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
+                    isOk = true;
+                }
+                else 
+                {
+                    isOk = false;
+                }
+            }
+
+            if (isOk != true)
+            {
+                DeleteCurrentWire();
+                WireCreationStarted = false;
+            }
+        }
+        //если num не равен нулю то мы ставим конечную точку и добавляем в список
+        else
+        {
+            spisokPointEnd.Add(CurrentEndPoint.transform.position);
+
+            if (myGameManager.CurrentBudget > 0)
+            {
+                CurrentEndPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
+            }
+            else
+            {
+                DeleteCurrentWire();
+                WireCreationStarted = false;
+            }
+        }
+        spisokPoint = spisokPointEnd;
+    }
+
+    //непосредственное создание провода, отнимание тока и давание возможности снова ставить провода
+    void FinishWireCreation()
+    {
+        CurrentEndPoint.ConnectedWires.Add(CurrentWire);
+        myGameManager.UpdateBudget(CurrentWire.actualCost);
+        
+        if (tok <= 0)
         {         
-            CurrentStartPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();  //
-            CurrentEndPoint = Instantiate(PointToInstantiate, StartPosition, Quaternion.identity, PointParent).GetComponent<Point>();
+            tok = 0;
         }
         else
         {
-            DeleteCurrentWire();
-            WireCreationStarted = false;
-        }                 
-    }
+           
+            tok -= MinusCharge;
+            Text.text = Mathf.FloorToInt(tok).ToString() + "V";
 
-    //непосредственное создание провода 
-    void FinishWireCreation()
-    {       
-        CurrentStartPoint.ConnectedWires.Add(CurrentWire);
-        CurrentEndPoint.ConnectedWires.Add(CurrentWire);
-
-        myGameManager.UpdateBudget(CurrentWire.actualCost);                       
-        
-        StartWireCreation(CurrentEndPoint.transform.position);      
+            Slider.value = tok / tok1;
+            Slider.fillRect.GetComponent<Image>().color = Gradient.Evaluate(Slider.value);          
+        }
+        StartWireCreation(CurrentEndPoint.transform.position, 1);
     }
 
     //уничтожение проводов
@@ -79,14 +150,52 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         if (CurrentWire != null)
         {
             Destroy(CurrentWire.gameObject);  
-            if (CurrentStartPoint.ConnectedWires.Count == 0 && CurrentStartPoint.Runtime == true) Destroy(CurrentStartPoint.gameObject);
-            if (CurrentEndPoint.ConnectedWires.Count == 0 && CurrentEndPoint.Runtime == true) Destroy(CurrentEndPoint.gameObject);
+
+            if (CurrentEndPoint != null)
+            {
+                if (CurrentEndPoint.ConnectedWires.Count == 0 && CurrentEndPoint.Runtime == true) Destroy(CurrentEndPoint.gameObject);
+            }
         }
     }
-
+    
     //обновление позиции
     private void Update()
-    {
+    {       
+        //если доходим по последней точки, то взависимости от количества тока мы либо получим определённое количество звёзд либо проиграем
+        if (spisokPoint.Contains(EndPoint.transform.position))
+        {
+            if (tok == 0)
+            {
+                EndRestart.SetActive(true);
+                ResButton.SetActive(true);
+                isCreate = false;
+            }
+            if (tok > 0 && tok <= 40)
+            {
+                EndLogo.SetActive(true);
+                EndButton.SetActive(true);
+                isCreate = false;
+                firstStar.SetActive(true);
+            }
+            else if (tok > 40 && tok < 100)
+            {
+                EndLogo.SetActive(true);
+                EndButton.SetActive(true);
+                isCreate = false;
+                firstStar.SetActive(true);
+                secondStar.SetActive(true);
+            }
+            else if (tok >= 100)
+            {
+                EndLogo.SetActive(true);
+                EndButton.SetActive(true);
+                isCreate = false;
+                firstStar.SetActive(true);
+                secondStar.SetActive(true);
+                thirdStar.SetActive(true);
+            }          
+        }
+
         if (WireCreationStarted == true)
         {
             Vector2 EndPosition = (Vector2)Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));

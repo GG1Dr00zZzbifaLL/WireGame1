@@ -3,27 +3,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public WireCreating wireCreating;
+    public UIManager myUIManager;  
     public float LowBudget = 10f;
     public float MidBudget = 6f;
     public float HighBudget = 3f;
-    public float CurrentBudget = 0f;
-    public UIManager myUIManager;
-    public WireCreating wireCreating;
-    public static Dictionary<Vector2, Point> AllPoints = new Dictionary<Vector2, Point>();
+    public float CurrentBudget = 0f; 
     
-
     private float LowBudgetCurrent;  
     private float MidBudgetCurrent;  
     private float HighBudgetCurrent;
     private int CurrentProvod = 0;
 
-
     //очищение поля и приравнивание текущего бюджета выбраному проводу 
     private void Awake()
     {
-        AllPoints.Clear();
-        Time.timeScale = 0;
-
         LowBudgetCurrent = LowBudget;
         MidBudgetCurrent = MidBudget;
         HighBudgetCurrent = HighBudget;

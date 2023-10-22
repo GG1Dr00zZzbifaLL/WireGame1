@@ -16,16 +16,24 @@ public class UIManager : MonoBehaviour
     public Text BudgetText;
     public Text BudgetText2;
     public Text BudgetText3;
+    public Text wireText;
     public Gradient myGradient;
     public Gradient myGradient2;
     public Gradient myGradient3;
 
     private int ChangeProvod = -1;
 
+
     //перезапуск сцены при нажатии на кнопку 
     public void Restart()
     {
-        SceneManager.LoadScene("Level_1");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    //переход на следующий уровень
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     //проверка на отключение провода в ui
@@ -50,6 +58,7 @@ public class UIManager : MonoBehaviour
                     wireCreating.DeleteCurrentWire();
                     wireCreating.WireCreationStarted = false;
                 }
+                wireText.gameObject.SetActive(false);
                 BudgetSlider.gameObject.SetActive(true);
                 BudgetSlider2.gameObject.SetActive(false);
                 BudgetSlider3.gameObject.SetActive(false);
@@ -59,6 +68,7 @@ public class UIManager : MonoBehaviour
                 wireCreating.isCreate = true;
                 wireCreating.WireToInstantiate = wireCreating.LowWire;
                 gameManager.AssignWire(myWireType);
+                wireCreating.MinusCharge = 40;
                 break;
 
             case 1:
@@ -68,6 +78,7 @@ public class UIManager : MonoBehaviour
                     wireCreating.DeleteCurrentWire();
                     wireCreating.WireCreationStarted = false;
                 }
+                wireText.gameObject.SetActive(false);
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(true);
                 BudgetSlider3.gameObject.SetActive(false);
@@ -77,6 +88,7 @@ public class UIManager : MonoBehaviour
                 wireCreating.isCreate = true;
                 wireCreating.WireToInstantiate = wireCreating.MidWire;
                 gameManager.AssignWire(myWireType);
+                wireCreating.MinusCharge = 20;
                 break;
 
             case 2:
@@ -86,6 +98,7 @@ public class UIManager : MonoBehaviour
                     wireCreating.DeleteCurrentWire();
                     wireCreating.WireCreationStarted = false;
                 }
+                wireText.gameObject.SetActive(false);
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(false);
                 BudgetSlider3.gameObject.SetActive(true);
@@ -95,9 +108,11 @@ public class UIManager : MonoBehaviour
                 wireCreating.isCreate = true;
                 wireCreating.WireToInstantiate = wireCreating.HighWire;
                 gameManager.AssignWire(myWireType);
+                wireCreating.MinusCharge = 10;
                 break;
 
             default:
+                wireText.gameObject.SetActive(true);
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(false);
                 BudgetSlider3.gameObject.SetActive(false);

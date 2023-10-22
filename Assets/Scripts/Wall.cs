@@ -3,7 +3,8 @@ using UnityEngine;
 public class Wall : MonoBehaviour
 {
     public WireCreating wireCreating;
-    
+
+
     //уничтожение провода при навидении курсора на BoxCollider2D
     private void OnMouseEnter()
     {
