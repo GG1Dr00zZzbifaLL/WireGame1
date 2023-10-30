@@ -8,6 +8,8 @@ TagManager:
   - wall
   - StartPoint
   - EndPoint
+  - Blue
+  - Yellow
   layers:
   - Default
   - TransparentFX

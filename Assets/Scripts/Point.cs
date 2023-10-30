@@ -7,10 +7,9 @@ public class Point : MonoBehaviour
     public WireCreating wireCreating;
     public List<Wire> ConnectedWires;
     public Vector2 PointID;
-    public float PointCharge = 0f;
     public bool Runtime = true;
     
-    //проверка точек на игровом поле
+    //получение позиции точки
     private void Start()
     {
         if (Runtime == false)

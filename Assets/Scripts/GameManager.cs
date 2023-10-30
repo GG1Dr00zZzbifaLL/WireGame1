@@ -5,17 +5,19 @@ public class GameManager : MonoBehaviour
 {
     public WireCreating wireCreating;
     public UIManager myUIManager;  
-    public float LowBudget = 10f;
-    public float MidBudget = 6f;
+
+    public float LowBudget = 1f;
+    public float MidBudget = 2f;
     public float HighBudget = 3f;
     public float CurrentBudget = 0f; 
     
     private float LowBudgetCurrent;  
     private float MidBudgetCurrent;  
     private float HighBudgetCurrent;
+
     private int CurrentProvod = 0;
 
-    //очищение поля и приравнивание текущего бюджета выбраному проводу 
+    //приравнивание текущего бюджета выбраному проводу 
     private void Awake()
     {
         LowBudgetCurrent = LowBudget;
@@ -55,8 +57,20 @@ public class GameManager : MonoBehaviour
     public void UpdateBudget(float itemCost)
     {
         CurrentBudget -= itemCost;
-        myUIManager.UpdateBudgetUI(CurrentBudget, LowBudget);
-      
+
+        if (CurrentProvod == 0)
+        {
+            myUIManager.UpdateBudgetUI(CurrentBudget, LowBudget);
+        }
+        else if (CurrentProvod == 1)
+        {
+            myUIManager.UpdateBudgetUI(CurrentBudget, MidBudget);
+        }
+        else if (CurrentProvod == 2)
+        {
+            myUIManager.UpdateBudgetUI(CurrentBudget, HighBudget);
+        }
+
         if (CurrentProvod == 0)
         {
             LowBudgetCurrent -= itemCost;

@@ -19,37 +19,46 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
     public GameObject thirdStar;
     private GameObject StartPoint;
     private GameObject EndPoint;  
+
     public Transform PointParent;
     public Transform wireParent;
     public List<Vector2> spisokPoint;
     public List<Vector2> spisokPointEnd;
     public Wire CurrentWire;
     public GameManager myGameManager;
-    public UIManager UImanager;
+    public UIManager myUImanager;
     public Point CurrentEndPoint; 
+    public Text ChangeWireText;
     public Text Text;
     public Slider Slider;
     public Gradient Gradient;
+    private Point selectedPoint;
 
     public float tok = 320f;
     public float tok1 = 320f;
-    public float MinusCharge;
+    public float MinusCharge = 0f;
+    public float maxDistance = 0.3f;
+    private int PointsList = 0;
+
     public bool WireCreationStarted = false;
     public bool isCreate = false;
     public bool isNoProvod = false;
     private bool isOk = false;
 
+
+    //В стартовой функции мы находит стартовую и конечную точку на сцене и добавляем их позиции в список,
+    //а также объявляем количество энергии и приравниваем слайдер к задаваемому параметру tok
     public void Start()
     {
         StartPoint = GameObject.FindGameObjectWithTag("StartPoint");
         EndPoint = GameObject.FindGameObjectWithTag("EndPoint");
         spisokPoint.Add(StartPoint.transform.position);
         spisokPointEnd.Add(StartPoint.transform.position);
-        Text.text = Mathf.FloorToInt(tok).ToString() + "V";
+        Text.text = Mathf.FloorToInt(tok).ToString() + "в";
         Slider.value = tok;
     }
 
-    //обработка нажатий кнопок 
+    //условие для начала создания провода 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (WireCreationStarted == false)
@@ -58,19 +67,6 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             {
                 WireCreationStarted = true;
                 StartWireCreation(Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(eventData.position)), 0);
-            }
-        }
-        else
-        {
-            //создание провода при нажатии на левую кнопку мыши
-            if (eventData.button == PointerEventData.InputButton.Left && !isNoProvod)
-            {             
-                if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true)
-                {
-                    FinishWireCreation();                    
-                    DeleteCurrentWire();
-                    WireCreationStarted = false;
-                }               
             }
         }
     }
@@ -133,15 +129,14 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             tok = 0;
         }
         else
-        {
-           
+        {    
             tok -= MinusCharge;
-            Text.text = Mathf.FloorToInt(tok).ToString() + "V";
+            Text.text = Mathf.FloorToInt(tok).ToString() + "в";
 
             Slider.value = tok / tok1;
             Slider.fillRect.GetComponent<Image>().color = Gradient.Evaluate(Slider.value);          
         }
-        StartWireCreation(CurrentEndPoint.transform.position, 1);
+        StartWireCreation(CurrentEndPoint.transform.position, 1); 
     }
 
     //уничтожение проводов
@@ -160,9 +155,87 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
     
     //обновление позиции
     private void Update()
-    {       
+    {
+        //если нажата левая кнопка мышки, то мы ставим точку
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); 
+            Collider2D[] hits = Physics2D.OverlapCircleAll(mousePos, maxDistance); 
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.CompareTag("Blue") && MinusCharge != 25)
+                {
+                    DeleteCurrentWire();
+                    WireCreationStarted = false;
+                }
+                if (hit.CompareTag("Yellow") && MinusCharge != 20)
+                {
+                    DeleteCurrentWire();
+                    WireCreationStarted = false;
+                }
+
+                if (!isNoProvod) 
+                {
+                    selectedPoint = hit.GetComponent<Point>(); 
+                    break;
+                }
+            }
+        }
+        //когда мы отпускаем кнопку, то происходит проверка стоит ли уже точка и если это так, то мы можем прокладывать провод
+        else if (Input.GetMouseButtonUp(0)) 
+        {
+            if (selectedPoint != null) 
+            {
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); 
+                Collider2D[] hits = Physics2D.OverlapCircleAll(mousePos, maxDistance); 
+                foreach (Collider2D hit in hits)
+                {                  
+                    //если мы ставим не подходящий провод для точки, то у нас это не получится 
+                    if (hit.CompareTag("Blue") && MinusCharge == 25)
+                    {
+                        PointsList += 1;
+                        Debug.Log(PointsList);
+                    }
+                    else if (hit.CompareTag("Blue") && MinusCharge != 25)
+                    {
+                        DeleteCurrentWire();
+                        WireCreationStarted = false;
+                    }
+
+                    if (hit.CompareTag("Yellow") && MinusCharge == 20)
+                    {
+                        PointsList += 1;
+                        Debug.Log(PointsList);
+                    }
+                    else if (hit.CompareTag("Yellow") && MinusCharge != 20)
+                    {
+                        DeleteCurrentWire();
+                        WireCreationStarted = false;
+                    }
+                    
+                    //вызов всех методов для создания провода 
+                    if (!isNoProvod) 
+                    {
+                        Point point = hit.GetComponent<Point>(); 
+                        
+                        if (point == selectedPoint) 
+                        {
+                            if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true) 
+                            {
+                                FinishWireCreation();
+                                DeleteCurrentWire();
+                                WireCreationStarted = false;
+                            }
+                        }
+                        break;
+                    }
+                }
+                selectedPoint = null; 
+            }
+        }
+
         //если доходим по последней точки, то взависимости от количества тока мы либо получим определённое количество звёзд либо проиграем
-        if (spisokPoint.Contains(EndPoint.transform.position))
+        if (spisokPoint.Contains(EndPoint.transform.position) && PointsList >= 4)
         {
             if (tok == 0)
             {
@@ -177,7 +250,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                 isCreate = false;
                 firstStar.SetActive(true);
             }
-            else if (tok > 40 && tok < 100)
+            else if (tok > 40 && tok < 90)
             {
                 EndLogo.SetActive(true);
                 EndButton.SetActive(true);
@@ -185,7 +258,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                 firstStar.SetActive(true);
                 secondStar.SetActive(true);
             }
-            else if (tok >= 100)
+            else if (tok >= 90)
             {
                 EndLogo.SetActive(true);
                 EndButton.SetActive(true);
@@ -195,7 +268,14 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                 thirdStar.SetActive(true);
             }          
         }
+        else if (spisokPoint.Contains(EndPoint.transform.position) && PointsList < 4 || tok == 0)
+        {
+            EndRestart.SetActive(true);
+            ResButton.SetActive(true);
+            isCreate = false;
+        }
 
+        //отрисовка провода при передвижении мышки
         if (WireCreationStarted == true)
         {
             Vector2 EndPosition = (Vector2)Vector2Int.RoundToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -218,5 +298,5 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                 CurrentWire.UpdateCreatingWire(CurrentEndPoint.transform.position);  
             }
         }
-    }
+    }   
 }
