@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -15,7 +14,7 @@ public class GameManager : MonoBehaviour
     private float MidBudgetCurrent;  
     private float HighBudgetCurrent;
 
-    private int CurrentProvod = 0;
+    public int CurrentProvod = 0;
 
     //приравнивание текущего бюджета выбраному проводу 
     private void Awake()
@@ -55,8 +54,12 @@ public class GameManager : MonoBehaviour
 
     //отнимание из бюджета сумму на которую мы проложили тот или иной провод 
     public void UpdateBudget(float itemCost)
-    {
-        CurrentBudget -= itemCost;
+    {    
+        if (CurrentBudget != 0)
+        {
+            CurrentBudget -= itemCost;
+            wireCreating.MinusTok();
+        }   
 
         if (CurrentProvod == 0)
         {

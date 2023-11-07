@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     public Button HighButton;
     public WireCreating wireCreating;
     public GameManager gameManager;
+    public GameObject CloseappLogo;
+    public GameObject Closeapp;
 
     public Slider BudgetSlider;
     public Slider BudgetSlider2;
@@ -21,7 +23,7 @@ public class UIManager : MonoBehaviour
     public Gradient myGradient2;
     public Gradient myGradient3;
 
-    private int ChangeProvod = -1;
+    public int ChangeProvod = -1;
 
 
     //перезапуск сцены при нажатии на кнопку 
@@ -36,6 +38,20 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    //метод закрытия обучающего экрана и давание возможности ставить провод 
+    public void CloseApp()
+    {
+        Closeapp.SetActive(false);
+        CloseappLogo.SetActive(false);
+        wireCreating.startCreate = true;
+    }
+
+    //загрузка 1 уровня
+    public void FirstLevel()
+    {
+        SceneManager.LoadScene("Level_1");
+    }
+
     //проверка на отключение провода в ui
     public void ChangeWire(int myWireType)
     {
@@ -43,7 +59,7 @@ public class UIManager : MonoBehaviour
         {
             myWireType = -1;
         }
-        else
+        else 
         {
             ChangeProvod = myWireType;    
         }
@@ -112,6 +128,7 @@ public class UIManager : MonoBehaviour
                 break;
 
             default:
+
                 wireText.gameObject.SetActive(true);
                 BudgetSlider.gameObject.SetActive(false);
                 BudgetSlider2.gameObject.SetActive(false);
@@ -123,6 +140,7 @@ public class UIManager : MonoBehaviour
                 wireCreating.WireCreationStarted = false;
                 wireCreating.DeleteCurrentWire();
                 break;
+
         }
     }
 
