@@ -207,7 +207,6 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                         if (hit.CompareTag("Blue") && MinusCharge == 25)
                         {
                             PointsList += 1;
-                            Debug.Log(PointsList);
                         }
                         else if (hit.CompareTag("Blue") && MinusCharge != 25)
                         {
@@ -218,7 +217,6 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                         if (hit.CompareTag("Yellow") && MinusCharge == 20)
                         {
                             PointsList += 1;
-                            Debug.Log(PointsList);
                         }
                         else if (hit.CompareTag("Yellow") && MinusCharge != 20)
                         {
@@ -248,7 +246,6 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                         catch (Exception ex)
                         {
                             Console.WriteLine("An error occurred: " + ex.Message);
-                            Debug.Log("ty");
                         }
                     }
                     selectedPoint = null;
