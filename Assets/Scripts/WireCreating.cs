@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -37,7 +38,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
     public float tok = 320f;
     public float tok1 = 320f;
     public float MinusCharge = 0f;
-    public float maxDistance = 0.3f;
+    public float maxDistance = 0.1f;
     private int PointsList = 0;
 
     public bool WireCreationStarted = false;
@@ -135,6 +136,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         StartWireCreation(CurrentEndPoint.transform.position, 1); 
     }
 
+    //метод отнимания шкалы тока вызываемый в GameManager.cs
     public void MinusTok()
     {
         tok -= MinusCharge;
@@ -169,8 +171,10 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             {
                 Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Collider2D[] hits = Physics2D.OverlapCircleAll(mousePos, maxDistance);
+
                 foreach (Collider2D hit in hits)
                 {
+                    //уничтожение провода если выбраный провод не совпадает с точкой
                     if (hit.CompareTag("Blue") && MinusCharge != 25)
                     {
                         DeleteCurrentWire();
@@ -184,7 +188,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
 
                     if (!isNoProvod)
                     {
-                        selectedPoint = hit.GetComponent<Point>(); //
+                        selectedPoint = hit.GetComponent<Point>(); 
                         break;
                     }
                 }
@@ -196,6 +200,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                 {
                     Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     Collider2D[] hits = Physics2D.OverlapCircleAll(mousePos, maxDistance);
+
                     foreach (Collider2D hit in hits)
                     {
                         //если мы ставим не подходящий провод для точки, то у нас это не получится 
@@ -222,20 +227,28 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
                         }
 
                         //вызов всех методов для создания провода 
-                        if (!isNoProvod)
+                        try
                         {
-                            Point point = hit.GetComponent<Point>();
-
-                            if (point == selectedPoint)
+                            if (!isNoProvod)
                             {
-                                if (myGameManager.CanPlaceItem(CurrentWire.actualCost) == true)
+                                Point point = hit.GetComponent<Point>();
+
+                                if (point == selectedPoint)
                                 {
-                                    FinishWireCreation();
-                                    DeleteCurrentWire();
-                                    WireCreationStarted = false;
+                                    if (myGameManager.CanPlaceItem(CurrentWire.actualCost))
+                                    {
+                                        FinishWireCreation();
+                                        DeleteCurrentWire();
+                                        WireCreationStarted = false;
+                                    }
                                 }
+                                break;
                             }
-                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                            Debug.Log("ty");
                         }
                     }
                     selectedPoint = null;
@@ -244,7 +257,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
         }     
 
         //если доходим по последней точки, то взависимости от количества тока мы либо получим определённое количество звёзд либо проиграем
-        if (spisokPoint.Contains(EndPoint.transform.position) && PointsList >= 3)
+        if (spisokPoint.Contains(EndPoint.transform.position) && PointsList >= 4)
         {
             if (tok == 0)
             {
@@ -282,7 +295,7 @@ public class WireCreating : MonoBehaviour, IPointerDownHandler
             }          
         }
         //если у нас закончился ток или недостаточно точек через которые мы проложили провод, то выводится экран поражения 
-        else if (spisokPoint.Contains(EndPoint.transform.position) && PointsList < 3 || tok == 0)
+        else if (spisokPoint.Contains(EndPoint.transform.position) && PointsList < 4 || tok == 0)
         {
             EndRestart.SetActive(true);
             ResButton.SetActive(true);

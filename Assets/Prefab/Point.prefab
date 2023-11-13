@@ -98,9 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4efb6dc179ae554eb4b52f9a3847b52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Runtime: 1
-  PointID: {x: 0, y: 0}
+  wireCreating: {fileID: 0}
   ConnectedWires: []
+  PointID: {x: 0, y: 0}
+  Runtime: 1
 --- !u!58 &-6732861537354344743
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -114,6 +115,6 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.009291557}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.57732314
